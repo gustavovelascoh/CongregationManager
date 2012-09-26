@@ -1,0 +1,10 @@
+Congregation Manager
+----------------------------
+Version 0.1 - 2012 09 26
+----------------------------
++ This version includes basic register for ministry time
+------------------------------------------------------------------------------------
+Future Work
+----------------------------
++ Enable sessions
++ Generate total monthly report

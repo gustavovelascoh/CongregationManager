@@ -1,0 +1,77 @@
+<!DOCTYPE PUBLIC>
+<html>
+	<head>
+		<title>listado</title>
+		<link type="text/css" href="css/custom-theme/jquery-ui-1.8.21.custom.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.8.21.custom.min.js"></script>
+		<script type="text/javascript">
+		function getReports(){
+			id = $('#pu').val();
+			
+			if (id != '-1'){
+				$.ajax({
+					type: 'POST',
+					url: '/list',
+					data: {id:id},
+					success: function(data){
+						data = data.split(";");
+						if (data[0] == "0"){
+							$('#reports').html('')
+							$('#empty').html('No hay registros para este usuario')
+						}
+						else{
+							var content = '';
+							for(i=0;i<parseInt(data[0]);i++){
+								content += '<tr><td>'
+								content += data[7*i+1];
+								content += '</td><td>';
+								content += data[7*i+2];
+								content += '</td><td>';
+								content += data[7*i+3];
+								content += '</td><td>';
+								content += data[7*i+4];
+								content += '</td><td>';
+								content += data[7*i+5];
+								content += '</td><td>';
+								content += data[7*i+6];
+								content += '</td><td>';
+								content += data[7*i+7];
+								content += '</td></tr>';
+							}
+							$('#empty').html('')
+							$('#reports').html(content);
+							
+						}
+					}
+				});
+			}
+		}
+		</script>
+	</head>
+	<body>
+		<select id ="pu" onchange="getReports();">
+			<option value="-1">Escoja una opci&oacute;n</option>
+			{%for pub in pubs	%}
+			<option value="{{pub.key().id()}}">{{pub.name}} {{pub.lastname}}</option>
+			{% endfor %}
+		</select>
+		<div id="empty"></div>
+		<table>
+			<thead>
+				<tr>
+					<th>Fecha</th>
+					<th>Libros</th>
+					<th>Folletos</th>
+					<th>Horas</th>
+					<th>Revistas</th>
+					<th>Revisitas</th>
+					<th>Estudios</th>
+				</tr>					
+			</thead>
+			<tbody id="reports">
+				
+			</tbody>
+		</table>
+	</body>
+</html>

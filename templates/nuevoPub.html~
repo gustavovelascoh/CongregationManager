@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <title>Congregaci&oacute;n &Aacute;lamos</title>
+    <style type="text/css">
+      .label {text-align: right}
+      .error {color: red}
+    </style>
+
+  </head>
+
+  <body>
+    <h2>Crear publicador</h2>
+		<form method="post">
+			<div class="error">
+				{{error}}
+			</div>
+			<table>				
+				<tr>
+					<td class="label">
+						Nombre(s):
+					</td>
+					<td>
+						<input type="text" name="nombre" value="{{nombre}}">
+					</td>
+					<td class="error">
+						{{error_nombre}}
+					</td>
+				</tr>
+				<tr>
+					<td class="label">
+						Apellido(s):
+					</td>						
+					<td>
+						<input type="text" name="apellido" value="">
+					</td>
+				</tr>
+				<tr>
+					<td class="label">
+						Usuario:
+					</td>
+					<td>
+						<input type="text" name="username" value="{{username}}">
+					</td>
+				</tr>
+				<tr>
+					<td class="label">
+						Password:
+					</td>						
+					<td>
+						<input type="password" name="password" value="">
+					</td>
+				</tr>			
+			</table>
+		</form>
+		<input type="submit" value="Crear">
+		<br>
+		<a href="/nuevousuario"> Crear nuevo usuario</a>
+  </body>
+
+</html>

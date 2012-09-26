@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>newReport.html</title>
+		<link type="text/css" href="css/custom-theme/jquery-ui-1.8.21.custom.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.8.21.custom.min.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				// Datepicker
+				$('#date').datepicker({
+					//inline: true,
+					autosize: true,
+					dateFormat : 'yy-mm-dd'
+				});
+			});
+			checkData = function(r){
+				var retval = {0:0,1:r};
+				if (r['pu'] == -1){
+					alert('Debe Escojer un publicador');
+					return retval;}
+				
+				if (r['date'] == ''){
+					alert('Debe escoger una fecha');
+					return retval;}
+					
+				if (r['ho'] == ''){
+					alert('Debe tener un valor de horas');
+					return retval;}
+				
+				r['mi'] = (r['mi'] == '')?'0':r['mi'];
+				r['bo'] = (r['bo'] == '')?'0':r['bo'];
+				r['br'] = (r['br'] == '')?'0':r['br'];
+				r['ma'] = (r['ma'] == '')?'0':r['ma'];
+				r['re'] = (r['re'] == '')?'0':r['re'];
+				r['st'] = (r['st'] == '')?'0':r['st'];
+				retval[0] = 1;
+				retval[1] = r;
+				return retval;
+					
+			}
+			
+			sendReport = function(){
+
+				
+				var report ={ pu: $('#pu').val(),
+							date: $('#date').val(),
+							bo: $('#bo').val(),
+							br: $('#br').val(),
+							ho: $('#ho').val(),
+							mi: $('#mi').val(),
+							ma: $('#ma').val(),
+							re: $('#re').val(),
+							st: $('#st').val()
+							};
+				var out = checkData(report);
+				
+				send = out[0];
+				report = out[1];
+				
+				if (!send)
+					return 0;
+				
+				//alert(report)
+				$.ajax({
+					type: 'POST',
+					url: '/newReport',
+					data: report,
+					success: function(data){
+						if (data == 'success'){
+							alert("Informacion guardada!!");
+						}
+						else{
+							alert("Error al guardar la informacion");
+						}
+					}
+				});
+			};
+		</script>
+		<style type="text/css">
+			/*demo page css*/
+			body{ font: 82.5% "Trebuchet MS", sans-serif; margin: 50px;}
+			.ui-datepicker {font-size: 11px;}
+		</style>
+	</head>
+	<body>
+		<form>
+			<table style="table-layout:fixed;">				
+				<thead>
+					{% if error: %}
+					<tr>
+						<th colspan="8" align="center">
+						{{error}}
+						</th>
+					</tr>
+					{% endif %}
+					{% if success: %}
+					<tr>
+						<th colspan="8" align="center">
+						{{success}}
+						</th>
+					</tr>
+					{% endif %}
+					<tr>
+						<th>Publicador</th>
+						<th>Fecha</th>
+						<th>Libros</th>
+						<th>Folletos</th>
+						<th>Horas</th>
+						<th>Revistas</th>
+						<th>Revisitas</th>
+						<th>Estudios</th>
+					</tr>					
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<select id ="pu">
+							<option value="-1">Escoja una opci&oacute;n</option>
+							{%for pub in pubs	%}
+							<option value="{{pub.key().id()}}">{{pub.name}} {{pub.lastname}}</option>
+							{% endfor %}
+							</select>						
+						</td>
+						<td><input type="text" id="date"></div></td>						
+						<td><input id="bo" type="text" size="4" value="0"></td>
+						<td><input id="br" type="text" size="4" value="0"></td>
+						<td>
+							<input id="ho" type="text" size="2" value="0">:<input id="mi" type="text" size="2" value="00">
+						</td>
+						<td><input id="ma" type="text" size="4" value="0"></td>
+						<td><input id="re" type="text" size="4" value="0"></td>
+						<td><input id="st" type="text" size="4" value="0"></td>
+					</tr>
+					<tr>
+						<td colspan="8" align="center">
+							<input type="button" value="Guardar" onClick="sendReport();">
+						</td>
+					</tr>
+				</tbody>		
+			</table>
+		</form>
+	</body>
+</html>
