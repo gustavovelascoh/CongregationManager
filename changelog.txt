@@ -1,5 +1,10 @@
 Congregation Manager
 ----------------------------
+Version 0.1.2 - 2012 09 27
+----------------------------
++ New classes/Entities created
++ Enable links for newReport and list after login
+----------------------------
 Version 0.1.1 - 2012 09 26
 ----------------------------
 - Removed all jquery demo files

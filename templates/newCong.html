@@ -1,4 +1,3 @@
-
 <!DOCTYPE PUBLIC>
 <html>
 	<head>
@@ -8,23 +7,12 @@
 		<script type="text/javascript" src="js/jquery-ui-1.8.21.custom.min.js"></script>
 	</head>
 	<body>
-		<table>
-		<thead>
-			<tr>
-				<th>Welcome {{name}} {{lastname}}!!!</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>
-					<a href="/newReport"> Ingresar informe</a>
-					<br>
-					<a href="/list">Listar informes</a>
-					<br>
-					<a href="/list">Ver/Editar datos</a>
-				</td>
-			</tr>
-		</tbody>
-		</table>		
+		<h2> Crear nueva Congregaci&oacute;n</h2>
+		<h4> {{success}} </h4>
+		<form method="GET" action="">
+			Nombre de la Congregaci&oacute;n
+			<input type="text" name="c_name">*
+			<input type="submit" value="Guardar">
+		</form>
 	</body>
 </html>

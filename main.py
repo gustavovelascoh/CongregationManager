@@ -45,8 +45,8 @@ class Index(BaseHandler):
 			if username and password:
 				pub = db.GqlQuery("SELECT * FROM Publisher WHERE username = '%s'" % username)			
 				
-				print pub,'\n'
-				if pub == None:
+				#	print pub,'\n'
+				if pub.count() == 0:
 					self.render("index.html",error = 'No existe el usuario')
 				
 				elif pub[0].password != password:
@@ -175,10 +175,34 @@ class newReport(BaseHandler):
 			#self.render('newReport.html', error = error)
 			self.write('error')
 			#self.redirect('/')
+class newCong(BaseHandler):
+	def get(self):
+		
+		c_name = self.request.get('c_name')
+		
+		if c_name:
+			dupl = Congregation.by_name(c_name)
+			
+			if dupl:
+				success = 'Existe ...'
+			else:
+				success = 'NO Existe ...'
+			#cong = Congregation.create(c_name)			
+			#cong.put()				
+			
+			success += "Se ha creado la congregacion %s" % c_name
+			self.render("newCong.html", success = success)
+		else:				
+			self.render("newCong.html")
+		
+	def post(self):
+		pass
 			
 app = webapp2.WSGIApplication([('/', Index),
 							  ('/newUser', newUser),
 							  ('/list',listPub),
 							  ('/newReport',newReport),
+							  ('/newCong',newCong),
+							  #('/newGroup',newGroup),
 							  #('/welcome',welcome),
 							  ], debug=True)
