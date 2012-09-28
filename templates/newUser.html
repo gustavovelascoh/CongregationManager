@@ -93,7 +93,31 @@
 				</p>				
 			</div>
 			{% endif %}
-			<table>				
+			<table>
+				<tr>
+					<td class="label">
+						Usuario:
+					</td>
+					<td>
+						<input type="text" name="username" value="{{username}}">
+					</td>
+				</tr>
+				<tr>
+					<td class="label">
+						Password:
+					</td>						
+					<td>
+						<input type="password" name="password" value="">
+					</td>
+				</tr>
+				<tr>
+					<td class="label">
+						E-mail:
+					</td>						
+					<td>
+						<input type="text" name="email" value="">
+					</td>
+				</tr>
 				<tr>
 					<td class="label">
 						Nombre(s):
@@ -115,20 +139,17 @@
 				</tr>
 				<tr>
 					<td class="label">
-						Usuario:
+						Congregaci&oacute;n:
 					</td>
 					<td>
-						<input type="text" name="username" value="{{username}}">
+						<select id ="cong" name="congregation" >
+							<option value="-1">Escoja una opci&oacute;n</option>
+							{%for con in congs	%}
+							<option value="{{con.key().id()}}">{{con.name}}</option>
+							{% endfor %}
+						</select>
 					</td>
 				</tr>
-				<tr>
-					<td class="label">
-						Password:
-					</td>						
-					<td>
-						<input type="password" name="password" value="">
-					</td>
-				</tr>			
 			</table>
 			<input id="button" type="submit" value="Crear">
 			<br>

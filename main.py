@@ -27,6 +27,27 @@ class BaseHandler(webapp2.RequestHandler):
 	
 	def render(self, template, **kw):
 		self.write(self.render_str(template, **kw))
+	
+	def set_secure_cookie(self, name, val):
+		cookie_val = make_secure_val(val)
+		self.response.headers.add_header(
+            'Set-Cookie',
+            '%s=%s; Path=/' % (name, cookie_val))
+	
+	def read_secure_cookie(self, name):
+		cookie_val = self.request.cookies.get(name)
+		return cookie_val and check_secure_val(cookie_val)
+
+	def login(self, user):
+		self.set_secure_cookie('user_id', str(user.key().id()))
+
+	def logout(self):
+		self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
+
+	def initialize(self, *a, **kw):
+		webapp2.RequestHandler.initialize(self, *a, **kw)
+		uid = self.read_secure_cookie('user_id')
+		self.user = uid and Publisher.by_id(int(uid))
 
 def render_post(response, post):
 	response.out.write('<b>' + post.subject + '</b><br>')
@@ -43,16 +64,15 @@ class Index(BaseHandler):
 		error = self.request.get('error')
 		if not error:
 			if username and password:
-				pub = db.GqlQuery("SELECT * FROM Publisher WHERE username = '%s'" % username)			
+				pub = Publisher.login(username,password)		
 				
-				#	print pub,'\n'
-				if pub.count() == 0:
-					self.render("index.html",error = 'No existe el usuario')
-				
-				elif pub[0].password != password:
+				if pub == -1:
 					self.render("index.html",error = 'Error en el password')
+				elif pub == -2:
+					self.render("index.html",error = 'Error en el username')
 				else:
-					self.render('welcome.html', name = pub[0].name, lastname = pub[0].lastname)
+					self.login(pub)
+					self.render('welcome.html', name = pub.name, lastname = pub.lastname)
 			else:
 				self.render("index.html", error = 'Datos incompletos', username = username)
 		else:
@@ -61,26 +81,35 @@ class Index(BaseHandler):
 class newUser(BaseHandler):
 	def get(self):
 		name = self.request.get('nombre')
-		self.render("newUser.html")
+		congs = Congregation.all()
+		self.render("newUser.html",congs = congs)
 	
 	def post(self):
-		name = self.request.get('name')
-		lastname = self.request.get('lastname')
-		username = self.request.get('username')
-		password = self.request.get('password')
+		self.name = self.request.get('name')
+		self.lastname = self.request.get('lastname')
+		self.username = self.request.get('username')
+		self.password = self.request.get('password')
+		self.email = self.request.get('email')
+		self.congregation = int(self.request.get('congregation'))
+		self.group = self.request.get('group')
+				
+		params = dict(username = self.username,
+                      name = self.name,
+                      lastname = self.lastname,
+                      email = self.email,
+                      group = self.group,
+                      congregation = self.congregation)
 		
-		params = dict(username = username,
-                      name = name,
-                      lastname = lastname)
 
-		if name and lastname and username and password:
-			pub = Publisher(username = username,
-							name = name,
-							lastname = lastname,
-							password = password)
-			pub.put();
-			params['success'] = "Se ha creado un nuevo usuario"
-			self.render('newUser.html',**params)
+		if self.name and self.lastname and self.username and self.password and self.congregation>0:
+			pub = Publisher.register(self.username, self.name, self.lastname, self.password,self.congregation,self.email,self.group)
+			if pub:
+				pub.put();
+				params['success'] = "Se ha creado un nuevo usuario"
+				self.render('newUser.html',**params)
+			else:
+				params['error'] = "Datos incompletos"
+				self.render('newUser.html', **params)
 
 		else:
 			params['error'] = "Datos incompletos"
@@ -179,6 +208,7 @@ class newCong(BaseHandler):
 	def get(self):
 		
 		c_name = self.request.get('c_name')
+		c_city = self.request.get('c_city')
 		
 		if c_name:
 			dupl = Congregation.by_name(c_name)
@@ -187,11 +217,13 @@ class newCong(BaseHandler):
 				success = 'Existe ...'
 			else:
 				success = 'NO Existe ...'
-			#cong = Congregation.create(c_name)			
-			#cong.put()				
 			
-			success += "Se ha creado la congregacion %s" % c_name
-			self.render("newCong.html", success = success)
+				cong = Congregation.create(c_name, c_city)			
+				cong.put()				
+			
+				success += "Se ha creado la congregacion %s" % c_name
+				self.render("newCong.html", success = success)
+				return
 		else:				
 			self.render("newCong.html")
 		

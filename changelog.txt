@@ -1,5 +1,11 @@
 Congregation Manager
 ----------------------------
+Version 0.2.0 - 2012 09 28
+----------------------------
++ Email and congregation options for publishers
++ Password hashing
++ Methods in class Publisher
+----------------------------
 Version 0.1.2 - 2012 09 27
 ----------------------------
 + New classes/Entities created
