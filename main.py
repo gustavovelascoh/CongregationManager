@@ -56,7 +56,8 @@ def render_post(response, post):
 class Index(BaseHandler):
 	def get(self):
 		error = self.request.get('error')
-		self.render("index.html")
+		login = 0
+		self.render("index.html",login = login)
 	
 	def post(self):
 		username = self.request.get('username')

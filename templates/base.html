@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+	<head>		
+		<link type="text/css" href="css/custom-theme/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" />
+		<link type="text/css" href="css/congre.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.9.2.custom.min.js"></script>
+		<script type="text/javascript" src="js/functions.js"></script>
+		<script type="text/javascript">
+		$(document).ready(function(){
+			
+			$("ul.topmenu li").hover(
+				function()
+				{ 
+					$(this).addClass("subhover"); //On hover over, add class "subhover"
+					$(this).find("ul.menu-1").slideDown('fast').show(); //Drop down the subnav on click
+	
+					$(this).hover(
+						function()
+						{
+						}, 
+						
+						function()
+						{	
+							$(this).parent().find("ul.menu-1").slideUp('fast'); //When the mouse hovers out of the subnav, move it back up
+						}
+					);
+				},
+				function()
+				{	//On Hover Out
+					$(this).removeClass("subhover"); //On hover out, remove class "subhover"
+				}
+			);
+		});
+		</script>
+		{% block head %}{% endblock %}
+	    <title>{% block title %}{% endblock %}</title>
+	</head>
+	<body>
+		<div id="container">
+			<div id="menu_bar">
+				<div id="menu_bar_content">
+				<a id="menu_bar_logo" href="/"/></a>
+				<ul class="topmenu">
+				{% if (login) %}	
+					<li>
+						<a href="#">Clientes</a>
+						<ul class="menu-1">
+							<li>
+								<a href="/newClient">Crear Cliente</a>
+							</li>
+							<li>
+								<a href="/newRegister">Asignar Cita</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="#">Vehiculos</a>
+						<ul class="menu-1">
+							<li>
+								<a href="/newVehicle">Crear Veh&iacute;culo</a>
+							</li>
+							<li>
+								<a href="/newCarModel">Crear Nuevo Modelo de Veh&iacute;culo</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="#">Asesores</a>
+						<ul class="menu-1">
+							<li>
+								<a href="/newAdvisor">Crear Asesor</a>
+							</li>
+							<li>
+								<a href="/newService">Crear Servicio</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="#">Calendario</a>
+						<ul class="menu-1">
+							<li>
+								<a href="/listRegs">Programaci&oacute;n por Fecha</a>
+							</li>
+							<li>
+								<a href="#">Programaci&oacute;n por semana</a>
+							</li>
+							<li>
+								<a href="#">Programaci&oacute;n por cliente</a>
+							</li>
+							<li>
+								<a href="#">Programaci&oacute;n por asesor</a>
+							</li>						
+						</ul>
+					</li>	
+				{% else %}				
+					<li id="ctrl">
+						<a href="/newUser">Acceder</a>
+						<ul class="menu-1">
+							<li>
+								<a href="/newClient">Iniciar Sesi&oacute;n</a>
+							</li>
+							<li>
+								<a href="/newRegister">Crear cuenta</a>
+							</li>
+						</ul>
+					</li>
+				{% endif %}				
+				</ul>
+				
+				</div>
+			</div>			
+	    	<div id="content_div">
+	    		<div id="content">
+	    			{% block content %}{% endblock %}
+	    		</div>
+	    	</div>
+	    </div>
+	</body>
+</html>

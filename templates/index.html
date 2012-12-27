@@ -1,28 +1,51 @@
-<html>
-  <head>
-    <title>Congregaci&oacute;n &Aacute;lamos</title>
-    <style type="text/css">
-      .label {text-align: right}
-      .error {color: red}
-    </style>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.21.custom.css" rel="stylesheet" />
-	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.8.21.custom.min.js"></script>
-	<style type="text/css">
-		/*demo page css*/
-		body{ font: 100% "Trebuchet MS", sans-serif; margin: 50px;}
-		.demoHeaders { margin-top: 2em; }
-		#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
-		#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
-		ul#icons {margin: 0; padding: 0;}
-		ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
-		ul#icons span.ui-icon {float: left; margin: 0 4px;}
-	</style>
-
-  </head>
-
-  <body>
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block head %}
+	{{ super() }}
+    <script type="text/javascript">
+	$(function() {
+		
+		$( "#dialog" ).dialog({
+			autoOpen: true,
+			draggable: false,
+			resizable: false,
+			position: {
+				my: "top",
+				at: "top+70",
+				of: window
+			},
+			width: 490,
+			zIndex: 2,
+		});
+		
+		$('.ui-dialog-titlebar-close').remove();
+	});
+	</script>
+{% endblock %}
+{% block content %}
+{% if error %}
+		<div> {{error}} </div>
+	{% endif %}
+	{% if user %}
+	<div id="dialog" title="{{user}}, Bienvenido!">
+	{% else %}
+	<div id="dialog" title="Bienvenido!">
+	
+		<form method="post" action="/">
+			<span>
+				email
+			</span>
+			<input id="username" name="username" value="{{ username }}">
+			<br>
+			<span>
+				password
+			</span>
+			<input id="pass" name="pass" type="password">
+			<br>
+			<input value="Ingresar" type="submit">
+		</form>
+	{% endif %}
+	</div>
     	<form method="post">			
 			<table width="300" align="center">
 				<thead>
@@ -61,5 +84,4 @@
 			</table>			
 		</form>		
 		<br>		
-  </body>
-</html>
+{% endblock %}
