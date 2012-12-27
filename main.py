@@ -115,7 +115,7 @@ class newUser(BaseHandler):
 			params['error'] = "Datos incompletos"
 			self.render('newUser.html', **params)
 
-class listPub(BaseHandler):
+class list(BaseHandler):
 	def get(self):
 		#pubs = db.GqlQuery("SELECT * FROM Publisher")
 		pubs = Publisher.all();
@@ -125,17 +125,30 @@ class listPub(BaseHandler):
 	
 	def post(self):
 		id = int(self.request.get('id'))
+		month = self.request.get('month')
+		year = self.request.get('year')
 		
 		if id:
 			k = db.Key.from_path('Publisher',id)
 			#print 'myKey = %s', k			
 			pubs = Publisher.all()
 			pubs.filter('__key__ =', k)
-						
-			#print 'count = ',pubs.count(),
 			
 			if pubs.count() > 0:
 				reps = pubs[0].report_set
+				
+				if year and month:
+					month = int(month)
+					year = int(year)
+					min = date(year, month, 1)
+					if month != 12:
+						max = date(year, month+1, 1)
+					else:
+						max = date(year+1, 1, 1)
+					
+					reps.filter('date >= ',min)	
+					reps.filter('date < ',max)
+								
 				rep_len = reps.count()			
 				#print 'len = ',rep_len
 				ret = '%s;' % (rep_len)
@@ -232,7 +245,7 @@ class newCong(BaseHandler):
 			
 app = webapp2.WSGIApplication([('/', Index),
 							  ('/newUser', newUser),
-							  ('/list',listPub),
+							  ('/list',list),
 							  ('/newReport',newReport),
 							  ('/newCong',newCong),
 							  #('/newGroup',newGroup),

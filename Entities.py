@@ -42,7 +42,7 @@ class Publisher(db.Model):
 		k = db.Key.from_path('Congregation',congregation)
 		
 		pw_hash = make_pw_hash(name, password)
-		p =  Publisher(username = username,
+		p =  Publisher(username = username.lower(),
 						name = name,
 						lastname = lastname,
 						password = pw_hash,

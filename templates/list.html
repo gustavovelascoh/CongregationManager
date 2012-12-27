@@ -5,15 +5,45 @@
 		<link type="text/css" href="css/custom-theme/jquery-ui-1.8.21.custom.css" rel="stylesheet" />
 		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.8.21.custom.min.js"></script>
+		<script type="text/javascript" src="js/jquery.mtz.monthpicker.js"></script>
+		
 		<script type="text/javascript">
+		$(function(){
+			// Month picker
+			$('#date').monthpicker({
+			    pattern: 'yyyy-mm'			    
+			});
+			
+			$('#date').monthpicker().bind('monthpicker-click-month', function () {
+			    getReports();
+			});
+		});
+		
+		
+		
 		function getReports(){
 			id = $('#pu').val();
+			date = $('#date').val();
+			date = date.split('-');
+			
 			
 			if (id != '-1'){
+				var Pubdata = {id:id};
+				
+				if (date != ''){
+					
+					year = parseInt(date[0]);
+					month = parseInt(date[1],10);
+									
+					if (2011 < year && year < 2030 && month > 0 && month < 13){
+						Pubdata.year = year;
+						Pubdata.month = month;
+					}
+				}
 				$.ajax({
 					type: 'POST',
 					url: '/list',
-					data: {id:id},
+					data: Pubdata,
 					success: function(data){
 						data = data.split(";");
 						if (data[0] == "0"){
@@ -48,6 +78,11 @@
 			}
 		}
 		</script>
+		<style type="text/css">
+			/*demo page css*/
+			body{ font: 82.5% "Trebuchet MS", sans-serif; margin: 50px;}
+			.ui-monthpicker{font-size: 11px;}
+		</style>
 	</head>
 	<body>
 		<select id ="pu" onchange="getReports();">
@@ -56,6 +91,7 @@
 			<option value="{{pub.key().id()}}">{{pub.name}} {{pub.lastname}}</option>
 			{% endfor %}
 		</select>
+		<input id="date"/>
 		<div id="empty"></div>
 		<table>
 			<thead>

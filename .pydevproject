@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?eclipse-pydev version="1.0"?>
-
-<pydev_project>
+<?eclipse-pydev version="1.0"?><pydev_project>
 <pydev_variables_property name="org.python.pydev.PROJECT_VARIABLE_SUBSTITUTION">
 <key>GOOGLE_APP_ENGINE</key>
 <value>C:\Program Files (x86)\Google\google_appengine</value>
 </pydev_variables_property>
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
-<path>/congre</path>
+<path>/congre-manager</path>
 </pydev_pathproperty>
 <pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
 <path>${GOOGLE_APP_ENGINE}</path>
 <path>${GOOGLE_APP_ENGINE}/lib/PyAMF</path>
 <path>${GOOGLE_APP_ENGINE}/lib/antlr3</path>
-<path>${GOOGLE_APP_ENGINE}/lib/django_0_96</path>
-<path>${GOOGLE_APP_ENGINE}/lib/django_1_2</path>
 <path>${GOOGLE_APP_ENGINE}/lib/django_1_3</path>
 <path>${GOOGLE_APP_ENGINE}/lib/enum</path>
 <path>${GOOGLE_APP_ENGINE}/lib/fancy_urllib</path>
@@ -32,7 +28,6 @@
 <path>${GOOGLE_APP_ENGINE}/lib/simplejson</path>
 <path>${GOOGLE_APP_ENGINE}/lib/sqlcmd</path>
 <path>${GOOGLE_APP_ENGINE}/lib/webapp2</path>
-<path>${GOOGLE_APP_ENGINE}/lib/webob_0_9</path>
 <path>${GOOGLE_APP_ENGINE}/lib/webob_1_1_1</path>
 <path>${GOOGLE_APP_ENGINE}/lib/yaml/lib</path>
 </pydev_pathproperty>

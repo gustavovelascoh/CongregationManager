@@ -1,5 +1,9 @@
 Congregation Manager
 ----------------------------
+Version 0.2.1 - 2012 10 04
+----------------------------
++ Month filtering in list
+----------------------------
 Version 0.2.0 - 2012 09 28
 ----------------------------
 + Email and congregation options for publishers

@@ -2,6 +2,7 @@ import hashlib
 import hmac
 import random
 from string import letters
+from google.appengine.ext import db
 
 secret = 'preach'
 
@@ -20,7 +21,7 @@ def make_salt(length = 5):
 def make_pw_hash(name, pw, salt = None):
     if not salt:
         salt = make_salt()
-    h = hashlib.sha256(name + pw + salt).hexdigest()
+    h = hashlib.sha256(name.lower() + pw + salt).hexdigest()
     return '%s,%s' % (salt, h)
 
 def valid_pw(name, password, h):
