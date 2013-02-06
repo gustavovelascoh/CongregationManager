@@ -1,15 +1,6 @@
 from google.appengine.ext import db
 import secure 
 
-class User(db.Model):
-	username = db.StringProperty(required = True)
-	password = db.StringProperty(required = True)
-	
-	@classmethod
-	def by_id(cls, uid):
-		return User.get_by_id(uid)	
-	
-
 class Congregation(db.Model):
 	name = db.StringProperty(required = True)
 	city = db.StringProperty(required = True)
@@ -27,15 +18,21 @@ class Group(db.Model):
 	assistantID = db.IntegerProperty(required = True)
 	congregation = db.ReferenceProperty(Congregation,required = True)
 
-class Publisher(User):
-		
+class Publisher(db.Model):
+	
+	username = db.StringProperty(required = True)
+	password = db.StringProperty(required = True)	
 	name = db.StringProperty()
 	lastname = db.StringProperty()
-	email = db.EmailProperty()	
+	email = db.EmailProperty()
 	
 	@classmethod
-	def by_name(cls, name):
-		u = Publisher.all().filter('username =', name).get()
+	def by_id(cls, uid):
+		return Publisher.get_by_id(uid)
+	
+	@classmethod
+	def by_username(cls, username):
+		u = Publisher.all().filter('username =', username.lower()).get()
 		return u
 	
 	@classmethod
@@ -47,10 +44,10 @@ class Publisher(User):
 		return p
 	
 	@classmethod
-	def login(cls, name, pw):
-		u = cls.by_name(name)
+	def login(cls, username, pw):
+		u = cls.by_username(username)
 		if u:
-			if secure.valid_pw(u.name, pw, u.password):
+			if secure.valid_pw(u.username, pw, u.password):
 				return u
 			else:
 				return -1

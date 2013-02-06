@@ -79,7 +79,7 @@ class BaseHandler(webapp2.RequestHandler):
 	def initialize(self, *a, **kw):
 		webapp2.RequestHandler.initialize(self, *a, **kw)
 		uid = self.read_secure_cookie('user_id')
-		self.user = uid and User.by_id(int(uid))
+		self.user = uid and Publisher.by_id(int(uid))
 
 def render_post(response, post):
 	response.out.write('<b>' + post.subject + '</b><br>')
@@ -90,10 +90,30 @@ class Home(LoginHandler):
 		self.user = self.read_secure_cookie('user_id')
 		error = self.request.get('error')
 		if self.user is None:			
-			self.render("base_5.html", error = error)
+			self.render("home.html", error = error)
 		else:
 			#welcome to your dashboard
+			self.render("home.html", user = self.user)
 			pass
+		
+	def post(self):
+		username = self.request.get('name')
+		pw = self.request.get('pw')
+		
+		if username and pw:
+			pub = Publisher.login(username, pw)
+			
+			if pub:
+				if pub == -1:
+					self.render("home.html", error = 'Contrasena incorrecta')
+				elif pub == -2:
+					self.render("home.html", error = 'No existe un usuario con ese nombre de usuario')
+				else:
+					self.login(pub)
+					self.redirect("/")
+		else:
+			self.render("home.html", error = 'Datos incompletos')
+		
 
 class New(LoginHandler):
 	def get(self):
@@ -119,7 +139,7 @@ class Signin(LoginHandler):
 		item = self.request.get('item')
 		
 		if username and pw:			
-			pub = Publisher.by_name(username.lower())
+			pub = Publisher.by_username(username.lower())
 			
 			if pub:
 				error = 'Existe un usuario con este nombre'
@@ -132,7 +152,11 @@ class Signin(LoginHandler):
 		else:
 			self.render("edit.html",item = item, error = 'sdfasdf')
 			
-				
+class Logout(LoginHandler):
+	def get(self):
+		self.logout()
+		self.redirect("/")
+		
 class Index(BaseHandler):
 	def get(self):
 		error = self.request.get('error')
@@ -324,10 +348,11 @@ class newCong(BaseHandler):
 	def post(self):
 		pass
 			
-app = webapp2.WSGIApplication([('/', Index),
-								('/home', Home),
+app = webapp2.WSGIApplication([#('/', Index),
+								('/', Home),
 								('/new', New),
 								('/signin', Signin),
+								('/logout', Logout),
 							  ('/newUser', newUser),
 							  ('/list',list),
 							  ('/newReport',newReport),

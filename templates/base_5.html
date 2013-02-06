@@ -53,7 +53,6 @@
 				display: table-cell;
 				padding:0 5px;
 				margin:0;
-				position: fixed;
 			}
 			
 			.menu-item
@@ -119,21 +118,28 @@
 				vertical-align: middle;
 			}
 						
-			.main-content
+			.main-container
 			{
 				width: 981px;
+				min-height: 700px;
 				margin: 0 auto;
 				box-shadow: 0 0 30px #333;
-				padding: 30px 15px;
+				padding: 50px 15px;
+				text-align: center;
 			}
-			
+						
+			.main-container *
+			{
+				display: table;
+				margin: 0 auto;
+			}
 			footer
 			{
 				width: 981px;
 				margin: 0 auto;
 				box-shadow: 0 0 30px #333;
 				border-radius: 0 0 15px 15px;
-				padding: 30px 15px;
+				padding: 15px 15px 5px;
 				font-size: 0.8em;
 				color: #333;
 				display: table;
@@ -151,6 +157,7 @@
 		</style>
 		{% endblock %}
 		{% block styles %}{% endblock %}
+		{% block scripts %}{% endblock %}
 	</head>
 	<body>
 		<header>
@@ -161,29 +168,29 @@
 				</div>
 				<div class="menu-tabs">
 					<ul>
-						{% if logged == 1 %}
+						{% if user %}
 						<li class="menu-item">
-								<div class="menu-title">Title 1</div>
+								<div class="menu-title">Informes</div>
 								<ul class="sub-menu">
 									<li class="sub-menu-item">
-										<a class="menu-link" href="#">Subitem 1.1adsdsdfsdfsdfsdfas </a>
+										<a class="menu-link" href="#">Ingresar informe</a>
 									</li>
 									<li class="sub-menu-item">
-										<a class="menu-link" href="#">Subitem 1.2</a>
+										<a class="menu-link" href="#">Ver informes</a>
 									</li>
 									<li class="sub-menu-item">
-										<a class="menu-link" href="#">Subitem 1.3</a>
+										<a class="menu-link" href="#">Estad&iacute;sticas</a>
 									</li>
 								</ul>
 							</li>
 							<li class="menu-item">
-								<div class="menu-title">Title 2</div>
+								<div class="menu-title">Cuenta</div>
 								<ul class="sub-menu">
 									<li class="sub-menu-item">
-										<a class="menu-link" href="#">Subitem 2.1 </a>
+										<a class="menu-link" href="#">Editar datos </a>
 									</li>
 									<li class="sub-menu-item">
-										<a class="menu-link" href="#">Subitem 2.2 </a>
+										<a class="menu-link" href="/logout">Cerrar Sesi&oacute;n</a>
 									</li>
 								</ul>
 							</li>
@@ -203,7 +210,7 @@
 				</div>
 			</nav>
 		</header>
-		<section class="main-content">
+		<section class="main-container">
 		{% if error %}
 		<div class="msg"> {{error}} </div>
 		{% endif %}
