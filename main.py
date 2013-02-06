@@ -89,12 +89,14 @@ class Home(LoginHandler):
 	def get(self):
 		self.user = self.read_secure_cookie('user_id')
 		error = self.request.get('error')
-		if self.user is None:			
+		if (self.user is None) or (self.user == ''):			
 			self.render("home.html", error = error)
 		else:
 			#welcome to your dashboard
-			self.render("home.html", user = self.user)
-			pass
+			pub = Publisher.by_id(int(self.user))
+			#self.write(pub)
+			self.render("home.html", user = pub, username = pub.username)
+			
 		
 	def post(self):
 		username = self.request.get('name')
@@ -119,7 +121,7 @@ class New(LoginHandler):
 	def get(self):
 		self.user = self.read_secure_cookie('user_id')
 		item = self.request.get('item')
-		if self.user is None:
+		if (self.user is None) or (self.user == ''):
 			if item is None:
 				self.render("base_5.html",logged = 0)
 			else:
@@ -128,7 +130,7 @@ class New(LoginHandler):
 			if item is None:
 				self.redirect('/home'+'?error=user'+ item)
 			else:
-				self.render("edit.html",item = item)
+				self.render("edit.html",item = item, u_id = self.user)
 	def post(self):
 		pass
 	
@@ -156,6 +158,16 @@ class Logout(LoginHandler):
 	def get(self):
 		self.logout()
 		self.redirect("/")
+
+class View(LoginHandler):
+	def get(self):
+		self.user = self.read_secure_cookie('user_id')
+		item = self.request.get('item')
+		if (self.user is None) or (self.user == ''):
+			self.redirect("/")
+		else:
+			self.render("list.html",item = item, u_id = self.user)
+		
 		
 class Index(BaseHandler):
 	def get(self):
@@ -353,6 +365,7 @@ app = webapp2.WSGIApplication([#('/', Index),
 								('/new', New),
 								('/signin', Signin),
 								('/logout', Logout),
+								('/view', View),
 							  ('/newUser', newUser),
 							  ('/list',list),
 							  ('/newReport',newReport),

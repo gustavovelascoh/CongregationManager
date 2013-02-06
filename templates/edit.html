@@ -15,8 +15,83 @@
 	}
 </style>
 {% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+	$(function(){
+		// Datepicker
+		$('#date').datepicker({
+			//inline: true,
+			autosize: true,
+			dateFormat : 'yy-mm-dd'
+		});
+	});
+	checkData = function(r){
+		var retval = {0:0,1:r};
+		if (r['pu'] == -1){
+			alert('Debe Escojer un publicador');
+			return retval;}
+		
+		if (r['date'] == ''){
+			alert('Debe escoger una fecha');
+			return retval;}
+			
+		if (r['ho'] == ''){
+			alert('Debe tener un valor de horas');
+			return retval;}
+		
+		r['mi'] = (r['mi'] == '')?'0':r['mi'];
+		r['bo'] = (r['bo'] == '')?'0':r['bo'];
+		r['br'] = (r['br'] == '')?'0':r['br'];
+		r['ma'] = (r['ma'] == '')?'0':r['ma'];
+		r['re'] = (r['re'] == '')?'0':r['re'];
+		r['st'] = (r['st'] == '')?'0':r['st'];
+		retval[0] = 1;
+		retval[1] = r;
+		return retval;
+			
+	}
+	
+	sendReport = function(){
+
+		
+		var report ={ pu: $('#pub_id').val(),
+					date: $('#date').val(),
+					bo: $('#books').val(),
+					br: $('#brochures').val(),
+					ho: $('#hours').val(),
+					mi: $('#minutes').val(),
+					ma: $('#magazines').val(),
+					re: $('#revisits').val(),
+					st: $('#studies').val()
+					};
+		var out = checkData(report);
+		
+		send = out[0];
+		report = out[1];
+		
+		if (!send)
+			return 0;
+		
+		//alert(report)
+		$.ajax({
+			type: 'POST',
+			url: '/newReport',
+			data: report,
+			success: function(data){
+				if (data == 'success'){
+					alert("Informacion guardada!!");
+				}
+				else{
+					alert("Error al guardar la informacion");
+				}
+			}
+		});
+	};
+</script>
+{% endblock %}
 {% block content %}
 {% if (item == 'user')%}
+<h2>Registro de usuario</h2>
 <form action="/signin" method="POST">
 	<input type="hidden" name="item" value="{{ item }}">
 	<table>
@@ -39,7 +114,52 @@
 		</tr>
 	</table>
 </form>
+{% elif item=='report' %}
+<h2>Nuevo Reporte</h2>
+<form class="form-t">
+	<input type="hidden" id="pub_id" value="{{ u_id }}">
+	<table>
+		<tbody>
+			<tr>
+				<td>Fecha</td>				
+				<td><input type="text" id="date"></td>
+			</tr>
+			<tr>
+				<td>Libros</td>		
+				<td><input id="books" type="text" size="4" value="0"></td>
+			</tr>
+			<tr>
+				<td>Folletos</td>
+				<td><input id="brochures" type="text" size="4" value="0"></td>
+			</tr>
+			<tr>
+				<td>Tiempo(HH:mm)</td>
+				<td>
+					<input id="hours" type="text" size="2" value="0">:<input id="minutes" type="text" size="2" value="00">
+				</td>
+			</tr>
+			<tr>
+				<td>Revistas</td>			
+				<td><input id="magazines" type="text" size="4" value="0"></td>
+			</tr>
+			<tr>
+				<td>Revisitas</td>
+				<td><input id="revisits" type="text" size="4" value="0"></td>
+			</tr>
+			<tr>
+				<td>Estudios</td>
+				<td><input id="studies" type="text" size="4" value="0"></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="button" value="Guardar" onClick="sendReport();">
+				</td>
+			</tr>
+		</tbody>		
+	</table>
+</form>
 {% else %}
+<h2>P&aacute;gina equivocada</h2>
 <form action="/new" method="POST">
 	<table>
 		<tr>

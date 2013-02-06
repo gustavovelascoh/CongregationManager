@@ -3,6 +3,7 @@
 	<head>
 		<title>{% block title %} Home {% endblock%}</title>
 		{% block base_style %}
+		<link type="text/css" href="css/custom-theme/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" />
 		<style>
 			body{
 				margin:0px;
@@ -130,8 +131,13 @@
 						
 			.main-container *
 			{
-				display: table;
+				//display: table;
 				margin: 0 auto;
+			}
+			
+			.form-t
+			{
+				display: initial;
 			}
 			footer
 			{
@@ -157,6 +163,8 @@
 		</style>
 		{% endblock %}
 		{% block styles %}{% endblock %}
+		<script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.9.2.custom.min.js"></script>
 		{% block scripts %}{% endblock %}
 	</head>
 	<body>
@@ -173,10 +181,10 @@
 								<div class="menu-title">Informes</div>
 								<ul class="sub-menu">
 									<li class="sub-menu-item">
-										<a class="menu-link" href="#">Ingresar informe</a>
+										<a class="menu-link" href="/new?item=report">Ingresar informe</a>
 									</li>
 									<li class="sub-menu-item">
-										<a class="menu-link" href="#">Ver informes</a>
+										<a class="menu-link" href="/view?item=report">Ver informes</a>
 									</li>
 									<li class="sub-menu-item">
 										<a class="menu-link" href="#">Estad&iacute;sticas</a>
