@@ -14,7 +14,7 @@
 				at: "top+70",
 				of: window
 			},
-			width: 490,
+			width: 350,
 			zIndex: 2,
 		});
 		
@@ -33,7 +33,7 @@
 	
 		<form method="post" action="/">
 			<span>
-				email
+				username
 			</span>
 			<input id="username" name="username" value="{{ username }}">
 			<br>
@@ -45,43 +45,5 @@
 			<input value="Ingresar" type="submit">
 		</form>
 	{% endif %}
-	</div>
-    	<form method="post">			
-			<table width="300" align="center">
-				<thead>
-					<tr><td colspan="2">
-					{% if error: %}
-					<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">				
-						<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
-						{{error}}
-						</p>				
-					</div>
-					{% endif %}
-				</td></tr>
-					<tr><td colspan="2">
-					<h2>Bienvenido</h2>
-					</td></tr>
-				</thead>				
-				<tr>
-					<td class="label">
-						Usuario:
-					</td>
-					<td>
-						<input type="text" name="username" value="{{username}}">
-					</td>
-				</tr>
-				<tr>
-					<td class="label">
-						Password:
-					</td>						
-					<td>
-						<input type="password" name="password" value="">
-					</td>
-				</tr>
-				<tr><td colspan="2" align="center"><input type="submit" value="Ingresar"></td></tr>
-				<tr><td colspan="2" align="center"><a href="/newUser"> Crear nuevo usuario</a></td></tr>
-				
-			</table>			
-		</form>		
-		<br>		
+	</div>		
 {% endblock %}

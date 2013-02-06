@@ -1,9 +1,8 @@
-#!/usr/bin/env python
-
 import os
-import re
-from datetime import *
-from Entities import *
+#import re
+from datetime import date,datetime
+from src.Entities import *
+#from Entities import *
 from string import *
 
 import webapp2
@@ -18,6 +17,39 @@ def render_str(template, **params):
 	t = jinja_env.get_template(template)
 	return t.render(params)
 
+class LoginHandler(webapp2.RequestHandler):
+
+	def write(self, *a, **kw):
+		self.response.out.write(*a, **kw)
+	
+	def render_str(self, template, **params):
+		params['user'] = self.user
+		return render_str(template, **params)
+
+	def render(self, template, **kw):
+		self.write(self.render_str(template, **kw))
+		
+	def set_secure_cookie(self, name, val):
+		cookie_val = secure.make_secure_val(val)
+		self.response.headers.add_header(
+            'Set-Cookie',
+            '%s=%s; Path=/' % (name, cookie_val))
+
+	def read_secure_cookie(self, name):
+		cookie_val = self.request.cookies.get(name)
+		return cookie_val and secure.check_secure_val(cookie_val)
+
+	def login(self, user):
+		self.set_secure_cookie('user_id', str(user.key().id()))
+
+	def logout(self):
+		self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
+	
+	def initialize(self, *a, **kw):
+		webapp2.RequestHandler.initialize(self, *a, **kw)
+		uid = self.read_secure_cookie('user_id')
+		self.user = uid and Publisher.by_id(int(uid))
+
 class BaseHandler(webapp2.RequestHandler):
 	def render_str(self, template, **params):
 		return render_str(template, **params)
@@ -29,14 +61,14 @@ class BaseHandler(webapp2.RequestHandler):
 		self.write(self.render_str(template, **kw))
 	
 	def set_secure_cookie(self, name, val):
-		cookie_val = make_secure_val(val)
+		cookie_val = secure.make_secure_val(val)
 		self.response.headers.add_header(
             'Set-Cookie',
             '%s=%s; Path=/' % (name, cookie_val))
 	
 	def read_secure_cookie(self, name):
 		cookie_val = self.request.cookies.get(name)
-		return cookie_val and check_secure_val(cookie_val)
+		return cookie_val and secure.check_secure_val(cookie_val)
 
 	def login(self, user):
 		self.set_secure_cookie('user_id', str(user.key().id()))
@@ -47,21 +79,69 @@ class BaseHandler(webapp2.RequestHandler):
 	def initialize(self, *a, **kw):
 		webapp2.RequestHandler.initialize(self, *a, **kw)
 		uid = self.read_secure_cookie('user_id')
-		self.user = uid and Publisher.by_id(int(uid))
+		self.user = uid and User.by_id(int(uid))
 
 def render_post(response, post):
 	response.out.write('<b>' + post.subject + '</b><br>')
 	response.out.write(post.content)
+	
+class Home(LoginHandler):
+	def get(self):
+		self.user = self.read_secure_cookie('user_id')
+		error = self.request.get('error')
+		if self.user is None:			
+			self.render("base_5.html", error = error)
+		else:
+			#welcome to your dashboard
+			pass
+
+class New(LoginHandler):
+	def get(self):
+		self.user = self.read_secure_cookie('user_id')
+		item = self.request.get('item')
+		if self.user is None:
+			if item is None:
+				self.render("base_5.html",logged = 0)
+			else:
+				self.render("edit.html",item = item)				
+		else:
+			if item is None:
+				self.redirect('/home'+'?error=user'+ item)
+			else:
+				self.render("edit.html",item = item)
+	def post(self):
+		pass
+	
+class Signin(LoginHandler):
+	def post(self):
+		username = self.request.get('name')
+		pw = self.request.get('pw')
+		item = self.request.get('item')
 		
+		if username and pw:			
+			pub = Publisher.by_name(username.lower())
+			
+			if pub:
+				error = 'Existe un usuario con este nombre'
+				self.render("edit.html",item = item, error = error)
+			else:
+				pub = Publisher.register(username, pw)				
+				pub.put()
+				
+				self.render("edit.html",item = item, error = 'todo bien')
+		else:
+			self.render("edit.html",item = item, error = 'sdfasdf')
+			
+				
 class Index(BaseHandler):
 	def get(self):
 		error = self.request.get('error')
 		login = 0
-		self.render("index.html",login = login)
+		self.render("index.html",login = login, error = error)
 	
 	def post(self):
 		username = self.request.get('username')
-		password = self.request.get('password')
+		password = self.request.get('pass')
 		error = self.request.get('error')
 		if not error:
 			if username and password:
@@ -245,6 +325,9 @@ class newCong(BaseHandler):
 		pass
 			
 app = webapp2.WSGIApplication([('/', Index),
+								('/home', Home),
+								('/new', New),
+								('/signin', Signin),
 							  ('/newUser', newUser),
 							  ('/list',list),
 							  ('/newReport',newReport),
